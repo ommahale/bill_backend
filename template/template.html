@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voucher</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        body {
+            margin: 10px;
+        }
+
+        .top_flex_bu {
+            display: flex;
+            justify-content: space-between
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        table{
+            width: 100%;
+        }
+        .table {
+            margin: 30px 0px;
+        }
+
+        .bottom_flex_bu {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px;
+        }
+
+        .total {
+            border: 1px solid black;
+            font-size: 1.1rem;
+            padding: 40px;
+            width: 25%;
+        }
+
+        .bu_flex {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+
+        .dec {
+            margin: 100px 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="header">
+        <h1 class="main_title">
+            ठाणे महानगर पालिका, ठाणे
+        </h1>
+        <!-- <img src="title.png" alt="title"> -->
+        <div class="top_flex_bu">
+            <span id="global_hub" class="tmc_bu">
+                ( B.U. 4261 ) Global Hub
+            </span>
+            <span class="tmc_bu" id="month">
+                {{voucher_datef}}
+            </span>
+        </div>
+        <div class="table">
+            
+            <div class="bu_flex">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>NAME OF PANEL</th>
+                            <th>Consumer No.</th>
+                            <th>Unit</th>
+                            <th>Amount (Rs.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in bills %}
+                        <tr>
+                            <td>{{i.sr_no}} </td>
+                            <td> {{i.bill_desc}} </td>
+                            <td> {{i.consumer_no}} </td>
+                            <td> {{i.unit_consumed}} </td>
+                            <td> {{i.amount}} </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+    
+    
+                </table>
+                <div class="total">
+                    <span>
+                        Total:- {{amount}}
+                    </span>
+                </div>
+            </div>
+            <div class="bottom_flex_bu">
+                <span>
+                    1, आंदाजपत्रकिय शिर्षक:- {{amt_1}}
+                </span>
+                <span>
+                    दाखला देणयात येतो आहे की वरीलप्रमाणे
+                </span>
+            </div>
+            <div class="bottom_flex_bu">
+                <span>
+                    २. मंजूर रक्कम:- {{amt_2}}
+                </span>
+                <span>
+                    नमुद केलेल्या वस्तू व त्यांचे दर हे बरोबर
+                </span>
+            </div>
+            <div class="bottom_flex_bu">
+                <span>
+                    ३. मागील खर्च:- {{amt_3}}
+                </span>
+                <span>
+                    असून वस्तू खात्यात मिळालेल्या आहेत
+                </span>
+            </div>
+            <div class="bottom_flex_bu">
+                <span>
+                    ४. ह्या बिलातील खर्च:- {{amount}}
+                </span>
+            </div>
+        </div>
+        <div>
+            क्र. ३ व ४ बेरीज :- {{amt_4}}
+        </div>
+        <div>
+            शिल्लक व बाकी:- {{amt_5}}
+        </div>
+        <div class="dec">
+            <div>
+                कांचन झोपे
+            </div>
+            <div>
+                उप अभियंता (विद्युत )
+            </div>
+            <div>
+                ठाणे महानगरपालिका ठाणे.
+            </div>
+        </div>
+        <div>
+            दिनांक
+        </div>
+        <div>
+            साठा बुकातील नोंद:-
+        </div>
+    </div>
+    <hr>
+    <div>
+        {{uid}}
+    </div>
+</body>
+
+</html>
