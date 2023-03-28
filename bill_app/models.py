@@ -14,12 +14,15 @@ class BaseModel(models.Model):
 
 class BillUnit(BaseModel):
     unit_number=models.IntegerField()
+    def __str__(self):
+        return str(self.unit_number)
 class BillMeter(BaseModel):
     consumer_no=models.CharField(max_length=100)
     billing_unit=models.ForeignKey(BillUnit,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.consumer_no
 
 class Bill(BaseModel):
-    bill_no=models.CharField(max_length=100)
     bill_date=models.DateField()
     bill_amount=models.FloatField()
     bill_meter=models.ForeignKey(BillMeter,on_delete=models.CASCADE)
@@ -33,6 +36,8 @@ class Bill(BaseModel):
     connection_type = models.CharField(max_length=50,default="")
     region = models.CharField(max_length=50,default='')
     electrical_duty = models.FloatField(default=0)
+    def __str__(self):
+        return self.bill_meter+" "+str(self.bill_date)
 
 
 class Threshold(BaseModel):
