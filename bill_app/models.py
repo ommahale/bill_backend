@@ -71,6 +71,16 @@ class Voucher(BaseModel):
         return self.amount-self.incentive_amount
     def __str__(self):
         return self.voucher_no
+class RecieptFile(BaseModel):
+    bill = models.OneToOneField(Bill,on_delete=models.CASCADE,related_name="reciept_file")
+    reciept_file = models.FileField(upload_to='reciept_files/',blank=True,null=True)
+    @property
+    def pathToFile(self):
+        return self.reciept_file.url
+    def __str__(self):
+        return self.bill.bill_meter.consumer_no+" "+str(self.bill.bill_date)
+    
+
 
 @receiver(post_save, sender=Bill)
 def handleFault(sender,instance, **kwargs):
