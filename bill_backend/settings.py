@@ -76,7 +76,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bill_backend.wsgi.application'
 
-DATE_INPUT_FORMATS = ['%d-%m-%Y']
+DATE_INPUT_FORMATS = ['%d-%b-%y','%d/%m/%Y']
+DATETIME_INPUT_FORMATS = ['%d-%b-%y','%d/%m/%Y']
+
+DATE_FORMAT='%d/%m/%Y'
+DATETIME_FORMAT='%d/%m/%Y'
+
 USE_L10N = False
 
 # Database
@@ -99,9 +104,9 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'djongo',
-#         'NAME': 'Electricity_bill_system',
+#         'NAME': os.environ.get('MDB_NAME_DEV'),
 #         'CLIENT': {
-#             'host':'mongodb+srv://admin:admin@cluster0.a5ffe8w.mongodb.net/test'
+#             'host': os.environ.get('MDB_HOST_PROD')
 #         }
 #     }
 # }
