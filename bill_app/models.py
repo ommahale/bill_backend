@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save,post_init
 from django.dispatch import receiver
 import datetime
 # Create your models here.
@@ -37,6 +37,7 @@ class Bill(BaseModel):
     connection_type = models.CharField(max_length=50,default="")
     region = models.CharField(max_length=50,default='')
     electrical_duty = models.FloatField(default=0)
+    has_fault=models.BooleanField(default=False)
     @property
     def savings(self):
         return self.amount-self.incentive_amount
@@ -46,7 +47,7 @@ class Bill(BaseModel):
             return False
         return True
     def __str__(self):
-        return self.bill_meter+" "+str(self.bill_date)
+        return self.bill_meter.consumer_no+" "+str(self.bill_date)
 
 
 class Threshold(BaseModel):
@@ -56,8 +57,10 @@ class FaultBill(BaseModel):
     bill=models.OneToOneField(Bill,on_delete=models.CASCADE,related_name="fault_bill")
     fault_reason=models.CharField(max_length=100)
 
-class Voucher(BaseModel):
+class Voucher(models.Model):
     bills = models.ManyToManyField(Bill)
+    uid = models.UUIDField(default=uuid.uuid4, editable=False)
+    voucher_no = models.BigAutoField(primary_key=True)
     amount = models.FloatField()
     incentive_amount = models.FloatField(default=amount)
     unit = models.IntegerField()
@@ -69,8 +72,19 @@ class Voucher(BaseModel):
     @property
     def savings(self):
         return self.amount-self.incentive_amount
+    @property
+    def total_amount(self):
+        bills=self.bills.all()
+        total_amount=0
+        for bill in bills:
+            if bill.is_valid_for_incentive:
+                total_amount+=bill.incentive_amount
+            else:
+                total_amount+=bill.amount
+        return total_amount
     def __str__(self):
         return self.voucher_no
+    
 class RecieptFile(BaseModel):
     bill = models.OneToOneField(Bill,on_delete=models.CASCADE,related_name="reciept_file")
     reciept_file = models.FileField(upload_to='reciept_files/',blank=True,null=True)
@@ -83,21 +97,40 @@ class RecieptFile(BaseModel):
 
 
 @receiver(post_save, sender=Bill)
-def handleFault(sender,instance, **kwargs):
-    if sender.electrical_duty > 0:
-        FaultBill.objects.create(bill=sender,fault_reason="Electrical Duty is greater than 0")
-        instance.has_fault = True
+def handleFault(sender,instance,*args, **kwargs):
+    if instance.electrical_duty > 0:
+        print(instance.has_fault)
+        bill=Bill.objects.get(uid=instance.uid)
+        post_save.disconnect(handleFault,sender=sender)
+        bill.has_fault=True
+        bill.save()
+        post_save.connect(handleFault,sender=sender)
+        FaultBill.objects.create(bill=instance,fault_reason="Electrical Duty is greater than 0")
     else :
         objs=sender.objects.filter(bill_meter=instance.bill_meter).order_by('-bill_date')
         threshold=Threshold.objects.first()
-        if len(objs) > 12:
-            if (objs[0].units_consumed - objs[1].units_consumed > threshold.threshold*objs[0].units_consumed) or (objs[0].units_consumed - objs[11].units_consumed > threshold.threshold*objs[0].units_consumed):
-                FaultBill.objects.create(bill=sender,fault_reason="Units consumed is greater than threshold")
-                instance.has_fault = True
+        current_bill=objs.first()
+        factor=threshold.threshold*current_bill.units_consumed
+        if len(objs) >= 12:
+            prev_month_bill=objs[1]
+            prev_year_bill=objs[11]
+            if (current_bill.units_consumed - prev_month_bill.units_consumed > factor) or (objs[0].units_consumed - objs[11].units_consumed > factor):
+                print("Fault")
+                FaultBill.objects.create(bill=instance,fault_reason="Units consumed is greater than threshold")
+                post_save.disconnect(handleFault,sender=sender)
+                bill.has_fault=True
+                bill.save()
+                post_save.connect(handleFault,sender=sender)
+                return
         if len(objs) > 1:
+            print("Fault")
             if (objs[0].units_consumed - objs[1].units_consumed > threshold.threshold*objs[0].units_consumed):
-                FaultBill.objects.create(bill=sender,fault_reason="Units consumed is greater than threshold")
-                instance.has_fault = True
+                FaultBill.objects.create(bill=instance,fault_reason="Units consumed is greater than threshold")
+                bill=Bill.objects.get(uid=instance.uid)
+                post_save.disconnect(handleFault,sender=sender)
+                bill.has_fault=True
+                bill.save()
+                post_save.connect(handleFault,sender=sender)
 
         
     
