@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Bill, BillMeter, BillUnit, FaultBill, Threshold, Voucher
-
 class BillSerializer(serializers.ModelSerializer):
     class Meta:
         depth=2
