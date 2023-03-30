@@ -26,56 +26,59 @@ class BillSerializer(serializers.ModelSerializer):
                   )
 
 class BillMeterSerializer(serializers.ModelSerializer):
+    bill_set = BillSerializer(many=True, read_only=True)
     class Meta:
         depth=2
         model = BillMeter
         fields = (
-            'uid', 
-            'consumer_no', 
-            'billing_unit', 
-            'bill_set'
-            )
+                'uid', 
+                'consumer_no', 
+                'billing_unit', 
+                'bill_set'
+                )
 
 class BillUnitSerializer(serializers.ModelSerializer):
+    billmeter_set = BillMeterSerializer(many=True, read_only=True)
     class Meta:
         depth=2
         model = BillUnit
         fields = (
-            'uid', 
-            'unit_number', 
-            'billmeter_set'
-            )
+                'uid', 
+                'unit_number', 
+                'billmeter_set'
+                )
 
 class FaultBillSerializer(serializers.ModelSerializer):
     class Meta:
         model = FaultBill
         fields = (
-            'uid', 
-            'fault_reason', 
-            'bill'
-            )
+                'uid', 
+                'fault_reason', 
+                'bill'
+                )
 class ThresholdSerializer(serializers.ModelSerializer):
     class Meta:
         model = Threshold
         fields = (
-            'uid', 
-            'threshold'
-            )
+                'uid', 
+                'threshold'
+                )
 class VoucherSerializer(serializers.ModelSerializer):
+    bills = BillSerializer(many=True, read_only=True)
     class Meta:
         depth=2
         model = Voucher
         fields = (
-            'uid', 
-            'bills', 
-            'voucher_no', 
-            'amount', 
-            'incentive_amount', 
-            'unit', 
-            'voucher_desc', 
-            'voucher_date', 
-            'is_paid', 
-            'last_bill_date',
-            'savings',
-            'total_amount'
-            )
+                'uid', 
+                'bills', 
+                'voucher_no', 
+                'amount', 
+                'incentive_amount', 
+                'unit', 
+                'voucher_desc', 
+                'voucher_date', 
+                'is_paid', 
+                'last_bill_date',
+                'savings',
+                'total_amount'
+                )

@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-from django.db.models.signals import post_save,post_init
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 import datetime
 # Create your models here.
@@ -118,11 +118,10 @@ def handleFault(sender,instance,*args, **kwargs):
         objs=sender.objects.filter(bill_meter=instance.bill_meter).order_by('-bill_date')
         threshold=Threshold.objects.first()
         current_bill=objs.first()
-        factor=threshold.threshold*current_bill.units_consumed
         if len(objs) >= 12:
             prev_month_bill=objs[1]
             prev_year_bill=objs[11]
-            if (current_bill.units_consumed - prev_month_bill.units_consumed > factor) or (objs[0].units_consumed - objs[11].units_consumed > factor):
+            if (current_bill.units_consumed - prev_month_bill.units_consumed > threshold.threshold*prev_month_bill.units_consumed) or (current_bill.units_consumed - prev_year_bill.units_consumed > threshold.threshold*prev_year_bill.units_consumed):
                 print("Fault")
                 FaultBill.objects.create(bill=instance,fault_reason="Units consumed is greater than threshold")
                 post_save.disconnect(handleFault,sender=sender)
@@ -132,7 +131,8 @@ def handleFault(sender,instance,*args, **kwargs):
                 return
         if len(objs) > 1:
             print("Fault")
-            if (objs[0].units_consumed - objs[1].units_consumed > threshold.threshold*objs[0].units_consumed):
+            prev_month_bill=objs[1]
+            if (current_bill.units_consumed - prev_month_bill.units_consumed > threshold.threshold*prev_month_bill.units_consumed):
                 FaultBill.objects.create(bill=instance,fault_reason="Units consumed is greater than threshold")
                 bill=Bill.objects.get(uid=instance.uid)
                 post_save.disconnect(handleFault,sender=sender)
