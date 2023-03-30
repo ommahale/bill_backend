@@ -21,8 +21,7 @@ class BillSerializer(serializers.ModelSerializer):
                   'electrical_duty', 
                   'savings', 
                   'is_valid_for_incentive', 
-                  'bill_meter', 
-                  'fault_bill',
+                  'bill_meter',
                   )
 
 class BillMeterSerializer(serializers.ModelSerializer):
@@ -50,6 +49,17 @@ class BillUnitSerializer(serializers.ModelSerializer):
 
 class FaultBillSerializer(serializers.ModelSerializer):
     class Meta:
+        model = FaultBill
+        fields = (
+                'uid', 
+                'fault_reason', 
+                'bill'
+                )
+
+class FaultBillDeepSerializer(serializers.ModelSerializer):
+    bill = BillSerializer(many=False, read_only=True)
+    class Meta:
+        depth=2
         model = FaultBill
         fields = (
                 'uid', 
