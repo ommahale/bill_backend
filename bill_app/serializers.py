@@ -21,6 +21,7 @@ class BillSerializer(serializers.ModelSerializer):
                   'savings', 
                   'is_valid_for_incentive', 
                   'bill_meter',
+                  'has_fault',
                   )
 
 class BillMeterSerializer(serializers.ModelSerializer):

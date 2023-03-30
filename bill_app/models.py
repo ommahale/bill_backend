@@ -51,7 +51,9 @@ class Bill(BaseModel):
         return self.amount-self.incentive_amount
     @property
     def is_valid_for_incentive(self):
-        if datetime.now().date() > self.incentive_due_date:
+        date=datetime.datetime.strptime(str(self.incentive_due_date),"%Y-%m-%d").date()
+        print(datetime.datetime.now().date() > date)
+        if (datetime.datetime.now().date() > date):
             return False
         return True
     def __str__(self):
