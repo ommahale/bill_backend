@@ -139,13 +139,3 @@ def handleFault(sender,instance,*args, **kwargs):
                 bill.has_fault=True
                 bill.save()
                 post_save.connect(handleFault,sender=sender)
-
-        
-    
-
-
-
-
-
-
-
