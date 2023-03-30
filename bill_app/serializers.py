@@ -35,9 +35,17 @@ class BillMeterSerializer(serializers.ModelSerializer):
                 'billing_unit', 
                 'bill_set'
                 )
+        
+class BillMeterLowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillMeter
+        fields = (
+                'uid', 
+                'consumer_no',
+                )
 
 class BillUnitSerializer(serializers.ModelSerializer):
-    billmeter_set = BillMeterSerializer(many=True, read_only=True)
+    billmeter_set = BillMeterLowSerializer(many=True, read_only=True)
     class Meta:
         depth=2
         model = BillUnit
@@ -46,7 +54,6 @@ class BillUnitSerializer(serializers.ModelSerializer):
                 'unit_number', 
                 'billmeter_set'
                 )
-
 class FaultBillSerializer(serializers.ModelSerializer):
     class Meta:
         model = FaultBill

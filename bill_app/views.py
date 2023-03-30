@@ -8,3 +8,6 @@ class BillListApiView(ListAPIView):
     queryset=models.Bill.objects.all()
     serializer_class=serializers.BillSerializer
 
+class BillUnitListApiView(ListAPIView):
+    queryset=models.BillUnit.objects.all()
+    serializer_class=serializers.BillUnitSerializer
