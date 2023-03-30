@@ -6,7 +6,15 @@ import datetime
 # Create your models here.
 
 class BaseModel(models.Model):
-    uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False,db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class BaseModelBigAuto(models.Model):
+    uid = models.BigAutoField(primary_key=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -57,7 +65,7 @@ class FaultBill(BaseModel):
     bill=models.OneToOneField(Bill,on_delete=models.CASCADE,related_name="fault_bill")
     fault_reason=models.CharField(max_length=100)
 
-class Voucher(models.Model):
+class Voucher(BaseModelBigAuto):
     bills = models.ManyToManyField(Bill)
     uid = models.UUIDField(default=uuid.uuid4, editable=False)
     voucher_no = models.BigAutoField(primary_key=True)

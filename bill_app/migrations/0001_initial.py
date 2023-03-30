@@ -62,21 +62,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Voucher',
-            fields=[
-                ('uid', models.UUIDField(default=uuid.uuid4, editable=False)),
-                ('voucher_no', models.BigAutoField(primary_key=True, serialize=False)),
-                ('amount', models.FloatField()),
-                ('incentive_amount', models.FloatField(default=models.FloatField())),
-                ('unit', models.IntegerField()),
-                ('voucher_desc', models.CharField(max_length=50)),
-                ('voucher_date', models.DateField(auto_now_add=True)),
-                ('is_paid', models.BooleanField(default=False)),
-                ('last_bill_date', models.DateField()),
-                ('bills', models.ManyToManyField(to='bill_app.Bill')),
-            ],
-        ),
-        migrations.CreateModel(
             name='RecieptFile',
             fields=[
                 ('uid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
