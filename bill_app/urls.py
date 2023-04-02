@@ -24,6 +24,8 @@ urlpatterns = [
     path('faultbills/',views.FaultBillListApiView.as_view()),
     path('billmeters/',views.BillMeterListApiView.as_view()),
     path('analytics/<str:bill_meter_id>/',views.AmountAnalyticsApiView.as_view()),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('createvoucher/',views.CreateVoucherView.as_view()),
+    path('vouchers/',views.VoucherListApiView.as_view()),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

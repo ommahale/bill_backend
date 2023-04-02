@@ -72,7 +72,7 @@ class Voucher(BaseModelBigAuto):
     uid = models.UUIDField(default=uuid.uuid4, editable=False)
     voucher_no = models.BigAutoField(primary_key=True)
     amount = models.FloatField()
-    incentive_amount = models.FloatField(default=amount)
+    incentive_amount = models.FloatField()
     unit = models.IntegerField()
     voucher_desc = models.CharField(max_length=50)
     voucher_date = models.DateField(auto_now_add=True)
@@ -108,6 +108,9 @@ class RecieptFile(BaseModel):
 
 @receiver(post_save, sender=Bill)
 def handleFault(sender,instance,*args, **kwargs):
+    faultObj=FaultBill.objects.filter(bill=instance)
+    if faultObj.exists():
+        return
     if instance.electrical_duty > 0:
         print(instance.has_fault)
         bill=Bill.objects.get(uid=instance.uid)

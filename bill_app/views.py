@@ -40,3 +40,28 @@ class AmountAnalyticsApiView(APIView):
         if len(bills_data)>=12:
             data['yearly change']=(bills_data[0].amount-bills_data[11].amount)*100/bills_data[11].amount
         return Response(data)
+
+class CreateVoucherView(APIView):
+    def post(self,request):
+        try:
+            amount=0
+            incentive_amount=0
+            data=request.data['bills']
+            voucher=models.Voucher.objects.create()
+            for bill in data:
+                bill=models.Bill.objects.get(uid=bill['uid'])
+                bill.is_paid=True
+                bill.save()
+                amount+=bill.amount
+                incentive_amount+=bill.incentive_amount
+                voucher.amount=amount
+                voucher.incentive_amount=incentive_amount
+                voucher.bills.add(bill)
+            voucher.save()
+            return Response({"status":"vocher created","uid":voucher.uid})
+        except(ValueError):
+            return Response({"status":"Invalid format"})
+
+class VoucherListApiView(ListAPIView):
+    queryset=models.Voucher.objects.all()
+    serializer_class=serializers.VoucherSerializer
