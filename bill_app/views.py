@@ -50,13 +50,15 @@ class CreateVoucherView(APIView):
             voucher=models.Voucher.objects.create()
             for bill in data:
                 bill=models.Bill.objects.get(uid=bill['uid'])
+                if bill.has_fault:
+                    continue
                 bill.is_paid=True
                 bill.save()
                 amount+=bill.amount
                 incentive_amount+=bill.incentive_amount
-                voucher.amount=amount
-                voucher.incentive_amount=incentive_amount
                 voucher.bills.add(bill)
+            voucher.amount=amount
+            voucher.incentive_amount=incentive_amount
             voucher.save()
             return Response({"status":"vocher created","uid":voucher.uid})
         except(ValueError):

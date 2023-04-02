@@ -93,7 +93,7 @@ class Voucher(BaseModelBigAuto):
                 total_amount+=bill.amount
         return total_amount
     def __str__(self):
-        return self.voucher_no
+        return str(self.voucher_no)
     
 class RecieptFile(BaseModel):
     bill = models.OneToOneField(Bill,on_delete=models.CASCADE,related_name="reciept_file")
