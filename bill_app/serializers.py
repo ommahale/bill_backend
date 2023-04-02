@@ -23,9 +23,32 @@ class BillSerializer(serializers.ModelSerializer):
                   'bill_meter',
                   'has_fault',
                   )
+        
+class BillExcludeMeterSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth=2
+        model = Bill
+        fields = (
+                  'uid', 
+                  'bill_date', 
+                  'amount', 
+                  'due_date', 
+                  'incentive_due_date', 
+                  'incentive_amount', 
+                  'is_paid', 
+                  'units_consumed', 
+                  'bill_desc', 
+                  'connection_category', 
+                  'connection_type', 
+                  'region', 
+                  'electrical_duty', 
+                  'savings', 
+                  'is_valid_for_incentive', 
+                  'has_fault',
+                  )
 
 class BillMeterSerializer(serializers.ModelSerializer):
-    bill_set = BillSerializer(many=True, read_only=True)
+    bill_set = BillExcludeMeterSerializer(many=True, read_only=True)
     class Meta:
         depth=2
         model = BillMeter
@@ -44,6 +67,8 @@ class BillMeterLowSerializer(serializers.ModelSerializer):
                 'consumer_no',
                 )
 
+
+
 class BillUnitSerializer(serializers.ModelSerializer):
     billmeter_set = BillMeterLowSerializer(many=True, read_only=True)
     class Meta:
@@ -55,6 +80,7 @@ class BillUnitSerializer(serializers.ModelSerializer):
                 'billmeter_set'
                 )
 class FaultBillSerializer(serializers.ModelSerializer):
+    bill=BillSerializer(many=False, read_only=True)
     class Meta:
         model = FaultBill
         fields = (
