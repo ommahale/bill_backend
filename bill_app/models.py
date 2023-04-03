@@ -46,9 +46,11 @@ class Bill(BaseModel):
     region = models.CharField(max_length=50,default='')
     electrical_duty = models.FloatField(default=0)
     has_fault=models.BooleanField(default=False)
+    
     @property
     def savings(self):
         return self.amount-self.incentive_amount
+    
     @property
     def is_valid_for_incentive(self):
         date=datetime.datetime.strptime(str(self.incentive_due_date),"%Y-%m-%d").date()
@@ -56,6 +58,15 @@ class Bill(BaseModel):
         if (datetime.datetime.now().date() >= date):
             return False
         return True
+    
+    @property
+    def has_crossed_due_date(self):
+        date=datetime.datetime.strptime(str(self.due_date),"%Y-%m-%d").date()
+        # print(datetime.datetime.now().date() > date)
+        if (datetime.datetime.now().date() > date):
+            return True
+        return False
+
     def __str__(self):
         return self.bill_meter.consumer_no+" "+str(self.bill_date)
 

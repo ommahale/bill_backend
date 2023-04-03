@@ -20,6 +20,7 @@ class BillSerializer(serializers.ModelSerializer):
                   'electrical_duty', 
                   'savings', 
                   'is_valid_for_incentive', 
+                  'has_crossed_due_date',
                   'bill_meter',
                   'has_fault',
                   )
@@ -44,6 +45,7 @@ class BillExcludeMeterSerializer(serializers.ModelSerializer):
                   'electrical_duty', 
                   'savings', 
                   'is_valid_for_incentive', 
+                  'has_crossed_due_date',
                   'has_fault',
                   )
 
