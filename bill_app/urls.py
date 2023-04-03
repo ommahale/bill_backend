@@ -28,4 +28,5 @@ urlpatterns = [
     path('vouchers/',views.VoucherListApiView.as_view()),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('test',views.TestView.as_view()),
 ]

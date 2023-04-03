@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from . import models
 from . import serializers
+from .utils import apiKalwa
 # Create your views here.
 
 class BillListApiView(ListAPIView):
@@ -67,3 +68,7 @@ class CreateVoucherView(APIView):
 class VoucherListApiView(ListAPIView):
     queryset=models.Voucher.objects.all()
     serializer_class=serializers.VoucherSerializer
+
+class TestView(APIView):
+    def get(self,request):
+        return Response({"status":apiKalwa.username})
