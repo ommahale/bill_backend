@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
+import dotenv
+import os
 
 
 class MahadiscomApi:
@@ -85,14 +87,14 @@ class MahadiscomApi:
                 # print(bill)
                 bills.append(bill)
         return bills
-    
+
     def getData(self):
         self.executeGet()
         self.executePost()
         self.bills= self.consumer_parser()
 
 
+dotenv.load_dotenv()
 
-api=MahadiscomApi(targetUrl='https://wss.mahadiscom.in/wss/wss?uiActionName=getCustAccountLogin',username='kalwacctv',password='Kalwa@1234')
-api.getData()
-print(len(api.bills))
+api=MahadiscomApi(targetUrl='https://wss.mahadiscom.in/wss/wss?uiActionName=getCustAccountLogin',username=os.environ.get('KALWA_USERNAME'),password=os.environ.get('KALWA_PASSWORD'))
+print(api.username)
