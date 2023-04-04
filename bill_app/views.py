@@ -71,4 +71,6 @@ class VoucherListApiView(ListAPIView):
 
 class TestView(APIView):
     def get(self,request):
-        return Response({"status":apiKalwa.username})
+        apiKalwa.getData()
+        data=apiKalwa.bills
+        return Response({"status":data})

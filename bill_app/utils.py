@@ -59,7 +59,7 @@ class MahadiscomApi:
         info['connection_category']=connection_category
         info['bill_description']=bill_description
         info['consumer_name']=consumer_name
-        info['electrical_duty']=electrical_duty
+        info['electrical_duty']=float(electrical_duty)
         return info
 
 
@@ -84,7 +84,7 @@ class MahadiscomApi:
                 bill['bill_month']=d[5]
                 bill['consumer_number']=d[1]
                 bill['bill_unit']=d[2]
-                # print(bill)
+                print(bill)
                 bills.append(bill)
         return bills
 
@@ -97,5 +97,4 @@ class MahadiscomApi:
 dotenv.load_dotenv()
 targetUrl='https://wss.mahadiscom.in/wss/wss?uiActionName=getCustAccountLogin'
 apiKalwa=MahadiscomApi(targetUrl=targetUrl,username=os.environ.get('KALWA_USERNAME'),password=os.environ.get('KALWA_PASSWORD'))
-apiKalwa.getData()
-print(apiKalwa.bills)
+# apiKalwa.getData()
