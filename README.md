@@ -43,7 +43,7 @@ The server is now up and running in http://localhost:8000/
 ## Scrapper:
 * The scrapper is a python script which scrapes the data from the website and stores it in the database. To run the scrapper run following command in terminal of your project directory.
 ```powershell
-& f:/Om_Tmc/electricity_webbackend/bill_backend/venv/Scripts/python.exe f:/Om_Tmc/electricity_webbackend/bill_backend/bill_app/utils.py
+python bill_app/utils.py
 ```
 * The scrapper is built using BeautifulSoup and requests library. 
 
