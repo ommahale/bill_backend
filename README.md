@@ -37,8 +37,8 @@ python manage.py runserver
 The server is now up and running in http://localhost:8000/
 
 ## API Endpoints
-* You can get all the endpoints by Swagger docs integrated in this project. To access the swagger docs go to http://localhost:8000/swagger/ in your browser.
-* You can also access endpoints docs by going to http://localhost:8000/redoc/ in your browser.
+* You can get all the endpoints by Swagger docs integrated in this project. To access the swagger docs go to http://localhost:8000/api/v1/swagger/ in your browser.
+* You can also access endpoints docs by going to http://localhost:8000/api/v1/redoc/ in your browser.
 
 ## Scrapper:
 * The scrapper is a python script which scrapes the data from the website and stores it in the database. To run the scrapper run following command in terminal of your project directory.
