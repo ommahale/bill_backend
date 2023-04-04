@@ -83,7 +83,7 @@ class MahadiscomApi:
                 bill['units_consumed']=d[6].strip()
                 bill['bill_month']=d[5]
                 bill['consumer_number']=d[1]
-                bill['bill_unit']=d[2]
+                bill['bill_unit']=int(d[2])
                 print(bill)
                 bills.append(bill)
         return bills
