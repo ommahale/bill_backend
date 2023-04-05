@@ -77,4 +77,6 @@ class TestView(APIView):
         return Response({"status":data})
     
 def fetchCycle():
-    print("fetching")
+    print("fetching.....")
+    apiKalwa.getData()
+    print("fetch cycle completed")

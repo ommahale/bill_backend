@@ -4,5 +4,5 @@ from bill_app.views import fetchCycle
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(fetchCycle, 'interval',days=1)
+    scheduler.add_job(fetchCycle, 'interval',days=5)
     scheduler.start()
