@@ -1,5 +1,4 @@
-{
-    "status": [
+[
       {
         "billDate": "29-MAR-23",
         "amount": 190,
@@ -1123,4 +1122,3 @@
         "bill_unit": 4261
       }
     ]
-  }

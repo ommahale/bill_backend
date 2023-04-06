@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.views import APIView
 from . import models
 from . import serializers
@@ -51,6 +52,8 @@ class CreateVoucherView(APIView):
             voucher=models.Voucher.objects.create()
             for bill in data:
                 bill=models.Bill.objects.get(uid=bill['uid'])
+                if bill is None:
+                    return Response({"status":"bill {uid} not found".format(uid=bill['uid'])},status=status.HTTP_404_NOT_FOUND)
                 if bill.has_fault:
                     continue
                 bill.is_paid=True
@@ -61,9 +64,9 @@ class CreateVoucherView(APIView):
             voucher.amount=amount
             voucher.incentive_amount=incentive_amount
             voucher.save()
-            return Response({"status":"vocher created","uid":voucher.uid})
+            return Response({"status":"vocher created","uid":voucher.uid},status=status.HTTP_201_CREATED)
         except(ValueError):
-            return Response({"status":"Invalid format"})
+            return Response({"status":"Invalid format"},status=status.HTTP_400_BAD_REQUEST)
 
 class VoucherListApiView(ListAPIView):
     queryset=models.Voucher.objects.all()
