@@ -59,8 +59,9 @@ class CreateVoucherView(APIView):
                     continue
                 bill.is_paid=True
                 bill.save()
-                amount+=bill.amount
-                incentive_amount+=bill.incentive_amount
+                amount+=bill.payable_amount
+                if bill.is_valid_for_incentive:
+                    incentive_amount+=bill.incentive_amount
                 voucher.bills.add(bill)
             voucher.amount=amount
             voucher.incentive_amount=incentive_amount

@@ -62,15 +62,24 @@ class Bill(BaseModel):
         return True
     
     @property
-    def has_crossed_due_date(self):
+    def is_valid_for_penalty(self):
         date=datetime.datetime.strptime(str(self.due_date),"%Y-%m-%d").date()
         # print(datetime.datetime.now().date() > date)
         if (datetime.datetime.now().date() > date):
             return True
         return False
+    
+    @property
+    def payable_amount(self):
+        if self.is_valid_for_penalty:
+            return self.penalty_amount
+        if self.is_valid_for_incentive:
+            return self.incentive_amount
+        return self.amount
 
     def __str__(self):
         return self.bill_meter.consumer_no+" "+str(self.bill_date)
+    
 
 
 class Threshold(BaseModel):
