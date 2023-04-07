@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from . import models
 from . import serializers
 from .utils import apiKalwa
+import datetime
 # Create your views here.
 
 class BillListApiView(ListAPIView):
@@ -74,11 +75,32 @@ class VoucherListApiView(ListAPIView):
 
 class TestView(APIView):
     def get(self,request):
-        apiKalwa.getData()
-        data=apiKalwa.bills
-        return Response({"status":data})
+        fetchCycle()
+        return Response({"status":"success"})
     
 def fetchCycle():
     print("fetching.....")
     apiKalwa.getData()
+    bills=apiKalwa.bills
+    for bill in bills:
+        bu=models.BillUnit.objects.get_or_create(unit_number=bill['bill_unit'])[0]
+        bm=models.BillMeter.objects.get_or_create(consumer_no=bill['consumer_number'],billing_unit=bu)[0]
+        bill_db=models.Bill.objects.get_or_create(
+            bill_date=datetime.datetime.strptime(bill['billDate'], '%d-%b-%y'),
+            bill_meter=bm,
+            amount=bill['amount'],
+            incentive_amount=bill['incentive_amount'],
+            due_date=datetime.datetime.strptime(bill['last_date'], '%d-%b-%y'),
+            incentive_due_date=datetime.datetime.strptime(bill['incentive_date'], '%d-%b-%y'),
+            units_consumed=float(bill['units_consumed'].replace(',','')),
+            bill_desc=bill['bill_description'],
+            connection_category=bill['connection_category'],
+            connection_type=bill['connection_category'][:2],
+            region='Kalwa',
+            electrical_duty=bill['electrical_duty'],
+            penalty_amount=bill['penalty_amount'],
+            current_reading=bill['current_reading'],
+            consumer_name=bill['consumer_name'],
+        )
+
     print("fetch cycle completed")

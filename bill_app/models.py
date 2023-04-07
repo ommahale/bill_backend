@@ -46,7 +46,9 @@ class Bill(BaseModel):
     region = models.CharField(max_length=50,default='')
     electrical_duty = models.FloatField(default=0)
     has_fault=models.BooleanField(default=False)
-    
+    penalty_amount=models.FloatField()
+    current_reading=models.CharField(max_length=100)
+    consumer_name=models.CharField(max_length=100)
     @property
     def savings(self):
         return self.amount-self.incentive_amount
@@ -123,7 +125,6 @@ def handleFault(sender,instance,*args, **kwargs):
     if faultObj.exists():
         return
     if instance.electrical_duty > 0:
-        print(instance.has_fault)
         bill=Bill.objects.get(uid=instance.uid)
         post_save.disconnect(handleFault,sender=sender)
         bill.has_fault=True
