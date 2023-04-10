@@ -1,32 +1,41 @@
 from rest_framework import serializers
 from .models import Bill, BillMeter, BillUnit, FaultBill, Threshold, Voucher
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Threshold
+        fields = (
+                'uid', 
+                'connection_type',
+                'connection_category',
+
+                )
 class BillSerializer(serializers.ModelSerializer):
     class Meta:
         depth=2
         model = Bill
         fields = (
                   'uid', 
+                  'bill_meter',
                   'bill_date', 
                   'amount', 
                   'due_date', 
                   'incentive_due_date', 
-                  'incentive_amount', 
-                  'is_paid', 
+                  'incentive_amount',
+                  'connection',
                   'units_consumed', 
-                  'bill_desc', 
-                  'connection_category', 
-                  'connection_type', 
+                  'bill_desc',
                   'region', 
                   'electrical_duty', 
                   'savings', 
                   'is_valid_for_incentive', 
                   'is_valid_for_penalty',
-                  'bill_meter',
                   'has_fault',
                   'penalty_amount',
                   'current_reading',
                   'consumer_name',
-                  'payable_amount'
+                  'payable_amount',
+                  'status',
                   )
         
 class BillExcludeMeterSerializer(serializers.ModelSerializer):
@@ -40,11 +49,9 @@ class BillExcludeMeterSerializer(serializers.ModelSerializer):
                   'due_date', 
                   'incentive_due_date', 
                   'incentive_amount', 
-                  'is_paid', 
+                  'connection', 
                   'units_consumed', 
-                  'bill_desc', 
-                  'connection_category', 
-                  'connection_type', 
+                  'bill_desc',
                   'region', 
                   'electrical_duty', 
                   'savings', 
@@ -54,7 +61,8 @@ class BillExcludeMeterSerializer(serializers.ModelSerializer):
                   'penalty_amount',
                   'current_reading',
                   'consumer_name',
-                  'payable_amount'
+                  'payable_amount',
+                  'status',
                   )
 
 class BillMeterSerializer(serializers.ModelSerializer):

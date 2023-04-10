@@ -56,13 +56,15 @@ class CreateVoucherView(APIView):
                 if bill is None:
                     return Response({"status":"bill {uid} not found".format(uid=bill['uid'])},status=status.HTTP_404_NOT_FOUND)
                 if bill.has_fault:
-                    continue
+                    voucher.fault_bills.add(bill)
+                    bill.status="fault"
                 bill.is_paid=True
                 bill.save()
                 amount+=bill.payable_amount
                 if bill.is_valid_for_incentive:
                     incentive_amount+=bill.incentive_amount
                 voucher.bills.add(bill)
+                bill.status="pending"
             voucher.amount=amount
             voucher.incentive_amount=incentive_amount
             voucher.save()
@@ -76,16 +78,21 @@ class VoucherListApiView(ListAPIView):
 
 class TestView(APIView):
     def get(self,request):
-        fetchCycle()
-        return Response({"status":"success"})
+        fetch_DB_data()
+        return Response({"status":"data"})
     
 def fetchCycle():
     print("fetching.....")
     apiKalwa.getData()
     bills=apiKalwa.bills
+    send_alert=False
     for bill in bills:
         bu=models.BillUnit.objects.get_or_create(unit_number=bill['bill_unit'])[0]
         bm=models.BillMeter.objects.get_or_create(consumer_no=bill['consumer_number'],billing_unit=bu)[0]
+        category_data=models.Category.objects.get_or_create(
+            connection_category=bill['connection_category'],
+            connection_type=bill['connection_category'][:2],
+        )[0]
         bill_db=models.Bill.objects.get_or_create(
             bill_date=datetime.datetime.strptime(bill['billDate'], '%d-%b-%y'),
             bill_meter=bm,
@@ -95,13 +102,17 @@ def fetchCycle():
             incentive_due_date=datetime.datetime.strptime(bill['incentive_date'], '%d-%b-%y'),
             units_consumed=float(bill['units_consumed'].replace(',','')),
             bill_desc=bill['bill_description'],
-            connection_category=bill['connection_category'],
-            connection_type=bill['connection_category'][:2],
+            connection=category_data,
             region='Kalwa',
             electrical_duty=bill['electrical_duty'],
             penalty_amount=bill['penalty_amount'],
             current_reading=bill['current_reading'],
             consumer_name=bill['consumer_name'],
         )
-
+        if bill_db[0].has_fault:
+            send_alert=True
+    
     print("fetch cycle completed")
+
+def fetch_DB_data():
+    data=None

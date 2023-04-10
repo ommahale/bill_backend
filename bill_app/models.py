@@ -31,6 +31,12 @@ class BillMeter(BaseModel):
     def __str__(self):
         return self.consumer_no
 
+class Category(BaseModel):
+    connection_category=models.CharField(max_length=100)
+    connection_type=models.CharField(max_length=100)
+    def __str__(self):
+        return self.category_name
+
 class Bill(BaseModel):
     bill_date=models.DateField()
     amount=models.FloatField()
@@ -38,11 +44,10 @@ class Bill(BaseModel):
     due_date=models.DateField()
     incentive_due_date=models.DateField()
     incentive_amount=models.FloatField()
-    is_paid=models.BooleanField(default=False)
+    status=models.CharField(max_length=100,default='unpaid')
     units_consumed=models.FloatField()
     bill_desc=models.CharField(max_length=100)
-    connection_category = models.CharField(max_length=50,default='')
-    connection_type = models.CharField(max_length=50,default="")
+    connection=models.ForeignKey(Category,on_delete=models.CASCADE)
     region = models.CharField(max_length=50,default='')
     electrical_duty = models.FloatField(default=0)
     has_fault=models.BooleanField(default=False)
@@ -91,6 +96,8 @@ class FaultBill(BaseModel):
 
 class Voucher(BaseModelBigAuto):
     bills = models.ManyToManyField(Bill)
+    fault_bills = models.ManyToManyField(FaultBill,blank=True)
+    cleared_bills = models.ManyToManyField(Bill,blank=True,related_name="cleared_bills")
     uid = models.UUIDField(default=uuid.uuid4, editable=False)
     voucher_no = models.BigAutoField(primary_key=True)
     amount = models.FloatField()
