@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from . import models
 from . import serializers
-from .utils import apiKalwa
+from .utils import apiKalwa,getData
 import datetime
 # Create your views here.
 
@@ -76,9 +76,14 @@ class VoucherListApiView(ListAPIView):
     queryset=models.Voucher.objects.all()
     serializer_class=serializers.VoucherSerializer
 
+class CategoryListApiView(ListAPIView):
+    queryset=models.Category.objects.all()
+    serializer_class=serializers.CategoryBillsSerializer
+
 class TestView(APIView):
     def get(self,request):
         fetch_DB_data()
+        fetchCycle()
         return Response({"status":"data"})
     
 def fetchCycle():
@@ -115,4 +120,27 @@ def fetchCycle():
     print("fetch cycle completed")
 
 def fetch_DB_data():
-    data=None
+    bills=getData()
+    for bill in bills:
+        bu=models.BillUnit.objects.get_or_create(unit_number=bill['billing_unit'])[0]
+        bm=models.BillMeter.objects.get_or_create(consumer_no=bill['consumer_no'],billing_unit=bu)[0]
+        category_data=models.Category.objects.get_or_create(
+            connection_category=bill['connection_category'],
+            connection_type=bill['connection_type'][:2],
+        )[0]
+        bill_db=models.Bill.objects.get_or_create(
+            bill_date=datetime.datetime.strptime(bill['bill_date'], '%d-%b-%y'),
+            bill_meter=bm,
+            amount=bill['amount'],
+            incentive_amount=bill['incentive_amount'],
+            due_date=datetime.datetime.strptime(bill['due_date'], '%d-%b-%y'),
+            incentive_due_date=datetime.datetime.strptime(bill['incentive_due_date'], '%d-%b-%y'),
+            units_consumed=float(bill['unit_consumed']),
+            bill_desc=bill['bill_desc'],
+            connection=category_data,
+            region='Kalwa',
+            electrical_duty=bill['electrical_duty'],
+            penalty_amount=bill['amount'],
+            current_reading='NaN',
+            consumer_name=bill['consumer_name'],
+        )

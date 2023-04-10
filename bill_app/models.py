@@ -35,7 +35,7 @@ class Category(BaseModel):
     connection_category=models.CharField(max_length=100)
     connection_type=models.CharField(max_length=100)
     def __str__(self):
-        return self.category_name
+        return self.connection_category
 
 class Bill(BaseModel):
     bill_date=models.DateField()

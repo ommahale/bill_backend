@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Bill, BillMeter, BillUnit, FaultBill, Threshold, Voucher
+from .models import Bill, BillMeter, BillUnit, FaultBill, Threshold, Voucher, Category
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,6 +10,7 @@ class CategorySerializer(serializers.ModelSerializer):
                 'connection_category',
 
                 )
+
 class BillSerializer(serializers.ModelSerializer):
     class Meta:
         depth=2
@@ -142,4 +143,15 @@ class VoucherSerializer(serializers.ModelSerializer):
                 'last_bill_date',
                 'savings',
                 'total_amount'
+                )
+
+class CategoryBillsSerializer(serializers.ModelSerializer):
+    bills = BillSerializer(many=True, read_only=True)
+    class Meta:
+        model = Category
+        fields = (
+                'uid', 
+                'connection_type',
+                'connection_category',
+                'bills',
                 )
