@@ -17,12 +17,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*",'http://localhost:3000', 'https://electricity-frontend-reac-git-5250f4-kundana-c20009-isquareited.vercel.app']
+ALLOWED_HOSTS = ["*",'http://localhost:3000', 'https://electricity-frontend-reac-git-5250f4-kundana-c20009-isquareited.vercel.app','http://0.0.0.0:8000',]
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'http://localhost:8000',
     'https://electricity-frontend-reac-git-5250f4-kundana-c20009-isquareited.vercel.app',
+    'http://0.0.0.0:8000',
 
 ]
 
