@@ -82,13 +82,16 @@ class CategoryListApiView(ListAPIView):
 
 class TestView(APIView):
     def get(self,request):
-        fetch_DB_data()
+        # fetch_DB_data()
         fetchCycle()
         return Response({"status":"data"})
     
 def fetchCycle():
     print("fetching.....")
-    apiKalwa.getData()
+    try:
+        apiKalwa.getData()
+    except(AttributeError,ConnectionAbortedError):
+        apiKalwa.getData()
     bills=apiKalwa.bills
     send_alert=False
     for bill in bills:
