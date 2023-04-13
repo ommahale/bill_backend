@@ -6,12 +6,13 @@ from rest_framework.views import APIView
 from . import models
 from . import serializers
 from .utils import apiKalwa,getData
+from rest_framework.permissions import IsAuthenticated
 import datetime
 # Create your views here.
-
 class BillListApiView(ListAPIView):
     queryset=models.Bill.objects.all().order_by('-bill_date')
     serializer_class=serializers.BillSerializer
+    # permission_classes=[IsAuthenticated]
     def get_queryset(self):
         id=self.request.query_params.get('id',None)
         if id is not None:
@@ -19,14 +20,17 @@ class BillListApiView(ListAPIView):
         return models.Bill.objects.all().order_by('-bill_date')
 
 class BillUnitListApiView(ListAPIView):
+    # permission_classes=[IsAuthenticated]
     queryset=models.BillUnit.objects.all()
     serializer_class=serializers.BillUnitSerializer
 
 class FaultBillListApiView(ListAPIView):
+    # permission_classes=[IsAuthenticated]
     queryset=models.FaultBill.objects.all()
     serializer_class=serializers.FaultBillSerializer
 
 class BillMeterListApiView(ListAPIView):
+    # permission_classes=[IsAuthenticated]
     queryset=models.BillMeter.objects.all()
     serializer_class=serializers.BillMeterSerializer
 
@@ -73,10 +77,12 @@ class CreateVoucherView(APIView):
             return Response({"status":"Invalid format"},status=status.HTTP_400_BAD_REQUEST)
 
 class VoucherListApiView(ListAPIView):
+    # permission_classes=[IsAuthenticated]
     queryset=models.Voucher.objects.all()
     serializer_class=serializers.VoucherSerializer
 
 class CategoryListApiView(ListAPIView):
+    # permission_classes=[IsAuthenticated]
     queryset=models.Category.objects.all()
     serializer_class=serializers.CategoryBillsSerializer
 
