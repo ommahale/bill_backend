@@ -93,26 +93,26 @@ USE_L10N = False
 
 
 #_____LOCAL TESTING_____
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': os.environ.get('MDB_NAME_DEV'),
-        'CLIENT': {
-            'host': os.environ.get('MDB_HOST_DEV')
-        }
-    }
-}
-
-# #_____PRODUCTION_____
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'djongo',
 #         'NAME': os.environ.get('MDB_NAME_DEV'),
 #         'CLIENT': {
-#             'host': os.environ.get('MDB_HOST_PROD')
+#             'host': os.environ.get('MDB_HOST_DEV')
 #         }
 #     }
 # }
+
+#_____PRODUCTION_____
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': os.environ.get('MDB_NAME_DEV'),
+        'CLIENT': {
+            'host': os.environ.get('MDB_HOST_PROD')
+        }
+    }
+}
 
 
 

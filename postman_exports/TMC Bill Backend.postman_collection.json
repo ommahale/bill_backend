@@ -1,0 +1,289 @@
+{
+	"info": {
+		"_postman_id": "8cbe96e0-94fa-4bfa-8746-fed57d80a066",
+		"name": "TMC Bill Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24621051"
+	},
+	"item": [
+		{
+			"name": "Bills",
+			"item": [
+				{
+					"name": "GetBills",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseURL}}/api/v1/bills",
+							"protocol": "http",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"bills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBillMeters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseURL}}/api/v1/billmeters",
+							"protocol": "http",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"billmeters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBillUnits",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseURL}}//api/v1/billunits",
+							"protocol": "http",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"",
+								"api",
+								"v1",
+								"billunits"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Voucher",
+			"item": [
+				{
+					"name": "CreateVoucher",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bills\":[\r\n        {\r\n            \"uid\": \"6777c7cb-0aa2-43f9-bf88-c7a4c4c31281\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseURL}}/api/v1/createvoucher/",
+							"protocol": "http",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"createvoucher",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Faulty bills",
+			"item": [
+				{
+					"name": "GetFaultBills",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseURL}}/api/v1/faultbills",
+							"protocol": "http",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"faultbills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RefreshFaultBills",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseURL}}/api/v1/refreshFaultBills",
+							"protocol": "http",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"refreshFaultBills"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Analytics",
+			"item": [
+				{
+					"name": "BillAnalytics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseURL}}/api/v1/analytics/:billmeter_id",
+							"protocol": "http",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"analytics",
+								":billmeter_id"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "billmeter_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "LoginUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseURL}}/api/login/",
+							"protocol": "http",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RefreshUserToken",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4MjA3NTIzNywiaWF0IjoxNjgxNDcwNDM3LCJqdGkiOiJhMzQxMjRmMTFhNTc0NTdhYjhiMmJiMTgzZDYwYTE1NiIsInVzZXJfaWQiOjF9.Y62VIcBzirCayN7eRc-rl013XBRVnvP20-l49wF-bAM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseURL}}/api/refreshtoken/",
+							"protocol": "http",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"refreshtoken",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "localhost:8000",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
