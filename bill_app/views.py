@@ -8,6 +8,7 @@ from . import serializers
 from .utils import apiKalwa,getData
 from rest_framework.permissions import IsAuthenticated
 import datetime
+from drf_yasg.utils import swagger_auto_schema
 # Create your views here.
 class BillListApiView(ListAPIView):
     queryset=models.Bill.objects.all().order_by('-bill_date')
@@ -49,6 +50,7 @@ class AmountAnalyticsApiView(APIView):
         return Response(data)
 
 class CreateVoucherView(APIView):
+    @swagger_auto_schema(request_body=serializers.CreateVoucherSerializer)
     def post(self,request):
         try:
             amount=0
