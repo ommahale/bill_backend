@@ -62,15 +62,17 @@ class CreateVoucherView(APIView):
                 if bill.has_fault:
                     voucher.fault_bills.add(bill)
                     bill.status="fault"
-                bill.is_paid=True
+                else:
+                    voucher.bills.add(bill)
+                    bill.status="pending"
                 bill.save()
                 amount+=bill.payable_amount
                 if bill.is_valid_for_incentive:
                     incentive_amount+=bill.incentive_amount
-                voucher.bills.add(bill)
-                bill.status="pending"
             voucher.amount=amount
             voucher.incentive_amount=incentive_amount
+            unit=request.data['unit']
+            voucher.unit=int(unit)
             voucher.save()
             return Response({"status":"vocher created","uid":voucher.uid},status=status.HTTP_201_CREATED)
         except(ValueError):

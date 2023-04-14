@@ -76,6 +76,8 @@ class Bill(BaseModel):
     
     @property
     def payable_amount(self):
+        if self.has_fault:
+            return 0
         if self.is_valid_for_penalty:
             return self.penalty_amount
         if self.is_valid_for_incentive:
@@ -105,7 +107,6 @@ class Voucher(BaseModelBigAuto):
     unit = models.IntegerField()
     voucher_desc = models.CharField(max_length=50)
     voucher_date = models.DateField(auto_now_add=True)
-    is_paid = models.BooleanField(default=False)
     last_bill_date = models.DateField()
     last_bill_date = models.DateField()
     @property
