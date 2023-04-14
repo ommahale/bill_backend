@@ -56,7 +56,8 @@ class CreateVoucherView(APIView):
                 if bill is None:
                     return Response({"status":"bill {uid} not found".format(uid=bill['uid'])},status=status.HTTP_404_NOT_FOUND)
                 if bill.has_fault:
-                    voucher.fault_bills.add(bill)
+                    fault_bill=models.FaultBill.objects.get(bill=bill)
+                    voucher.fault_bills.add(fault_bill)
                     bill.status="fault"
                 bill.is_paid=True
                 bill.save()
@@ -82,7 +83,7 @@ class CategoryListApiView(ListAPIView):
 
 class TestView(APIView):
     def get(self,request):
-        # fetch_DB_data()
+        fetch_DB_data()
         fetchCycle()
         return Response({"status":"data"})
     
@@ -91,7 +92,7 @@ def fetchCycle():
     try:
         apiKalwa.getData()
     except(AttributeError,ConnectionAbortedError):
-        apiKalwa.getData()
+        return Response({'error':'connection error'})
     bills=apiKalwa.bills
     send_alert=False
     for bill in bills:
