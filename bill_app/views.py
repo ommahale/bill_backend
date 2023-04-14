@@ -8,6 +8,7 @@ from . import serializers
 from .utils import apiKalwa,getData
 from rest_framework.permissions import IsAuthenticated
 import datetime
+from drf_yasg.utils import swagger_auto_schema
 # Create your views here.
 class BillListApiView(ListAPIView):
     queryset=models.Bill.objects.all().order_by('-bill_date')
@@ -41,14 +42,20 @@ class AmountAnalyticsApiView(APIView):
         meter=serializers.BillMeterSerializer(meter_data).data
         data={}
         data['meter']=meter
-        data['percentage_change']=(bills_data[0].amount-bills_data.last().amount)*100/bills_data.last().amount
+        data['percentage_change_amount']=(bills_data[0].amount-bills_data.last().amount)*100/bills_data.last().amount
         if len(bills_data)>1:
-            data['monthly change']=(bills_data[0].amount-bills_data[1].amount)*100/bills_data[1].amount
+            data['monthly change_amount']=(bills_data[0].amount-bills_data[1].amount)*100/bills_data[1].amount
         if len(bills_data)>=12:
-            data['yearly change']=(bills_data[0].amount-bills_data[11].amount)*100/bills_data[11].amount
+            data['yearly change_amount']=(bills_data[0].amount-bills_data[11].amount)*100/bills_data[11].amount
+        data['percentage_change_unit']=(bills_data[0].units_consumed-bills_data.last().units_consumed)*100/bills_data.last().units_consumed
+        if len(bills_data)>1:
+            data['monthly change_unit']=(bills_data[0].units_consumed-bills_data[1].units_consumed)*100/bills_data[1].units_consumed
+        if len(bills_data)>=12:
+            data['yearly change_unit']=(bills_data[0].units_consumed-bills_data[11].units_consumed)*100/bills_data[11].units_consumed
         return Response(data)
 
 class CreateVoucherView(APIView):
+    @swagger_auto_schema(request_body=serializers.CreateVoucherSerializer)
     def post(self,request):
         try:
             amount=0
@@ -60,7 +67,8 @@ class CreateVoucherView(APIView):
                 if bill is None:
                     return Response({"status":"bill {uid} not found".format(uid=bill['uid'])},status=status.HTTP_404_NOT_FOUND)
                 if bill.has_fault:
-                    voucher.fault_bills.add(bill)
+                    fault_bill=models.FaultBill.objects.get(bill=bill)
+                    voucher.fault_bills.add(fault_bill)
                     bill.status="fault"
                 else:
                     voucher.bills.add(bill)
@@ -88,18 +96,28 @@ class CategoryListApiView(ListAPIView):
     queryset=models.Category.objects.all()
     serializer_class=serializers.CategoryBillsSerializer
 
+class RefreshFault(APIView):
+    def get(self,request):
+        # fetch_DB_data()
+        # fetchCycle()
+        bills=models.Bill.objects.all()
+        models.FaultBill.objects.all().delete()
+        for bill in bills:
+            bill.save()
+        return Response({"status":"data"})
+
 class TestView(APIView):
     def get(self,request):
         # fetch_DB_data()
-        fetchCycle()
+        # fetchCycle()
         return Response({"status":"data"})
-    
+
 def fetchCycle():
     print("fetching.....")
     try:
         apiKalwa.getData()
     except(AttributeError,ConnectionAbortedError):
-        apiKalwa.getData()
+        return Response({'error':'connection error'})
     bills=apiKalwa.bills
     send_alert=False
     for bill in bills:

@@ -155,21 +155,20 @@ def handleFault(sender,instance,*args, **kwargs):
         if len(objs) >= 12:
             prev_month_bill=objs[1]
             prev_year_bill=objs[11]
-            if (current_bill.units_consumed - prev_month_bill.units_consumed > threshold.threshold*prev_month_bill.units_consumed) or (current_bill.units_consumed - prev_year_bill.units_consumed > threshold.threshold*prev_year_bill.units_consumed):
+            if (abs(current_bill.units_consumed - prev_month_bill.units_consumed) > threshold.threshold*prev_month_bill.units_consumed) or (abs(current_bill.units_consumed - prev_year_bill.units_consumed) > threshold.threshold*prev_year_bill.units_consumed):
                 print("Fault")
-                FaultBill.objects.create(bill=instance,fault_reason="Units consumed is greater than threshold")
+                FaultBill.objects.get_or_create(bill=current_bill,fault_reason="Units consumed is greater than threshold")
                 post_save.disconnect(handleFault,sender=sender)
-                bill.has_fault=True
-                bill.save()
+                current_bill.has_fault=True
+                current_bill.save()
                 post_save.connect(handleFault,sender=sender)
                 return
         if len(objs) > 1:
-            print("Fault")
             prev_month_bill=objs[1]
-            if (current_bill.units_consumed - prev_month_bill.units_consumed > threshold.threshold*prev_month_bill.units_consumed):
-                FaultBill.objects.create(bill=instance,fault_reason="Units consumed is greater than threshold")
-                bill=Bill.objects.get(uid=instance.uid)
+            if (abs(current_bill.units_consumed - prev_month_bill.units_consumed) > threshold.threshold*prev_month_bill.units_consumed):
+                print("Fault")
+                FaultBill.objects.get_or_create(bill=current_bill,fault_reason="Units consumed is greater than threshold")
                 post_save.disconnect(handleFault,sender=sender)
-                bill.has_fault=True
-                bill.save()
+                current_bill.has_fault=True
+                current_bill.save()
                 post_save.connect(handleFault,sender=sender)

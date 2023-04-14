@@ -86,6 +86,23 @@ class BillMeterLowSerializer(serializers.ModelSerializer):
                 'consumer_no',
                 )
 
+class VoucherBillUidSerializer(serializers.ModelSerializer):
+    uid=serializers.CharField(read_only=False)
+    class Meta:
+        model = Bill
+        fields = (
+                'uid', 
+                )
+
+class CreateVoucherSerializer(serializers.ModelSerializer):
+    bills=VoucherBillUidSerializer(many=True, read_only=False)
+    unit=serializers.IntegerField(read_only=False)
+    class Meta:
+        model = Voucher
+        fields = (
+            'bills',
+            'unit',
+        )
 
 
 class BillUnitSerializer(serializers.ModelSerializer):
@@ -139,7 +156,6 @@ class VoucherSerializer(serializers.ModelSerializer):
                 'unit', 
                 'voucher_desc', 
                 'voucher_date', 
-                'is_paid', 
                 'last_bill_date',
                 'savings',
                 'total_amount'

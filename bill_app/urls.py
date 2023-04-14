@@ -22,6 +22,7 @@ urlpatterns = [
     path('bills/',views.BillListApiView.as_view()),
     path('billunits/',views.BillUnitListApiView.as_view()),
     path('faultbills/',views.FaultBillListApiView.as_view()),
+    path('refreshFaultBills/',views.RefreshFault.as_view()),
     path('billmeters/',views.BillMeterListApiView.as_view()),
     path('analytics/<str:bill_meter_id>/',views.AmountAnalyticsApiView.as_view()),
     path('createvoucher/',views.CreateVoucherView.as_view()),
