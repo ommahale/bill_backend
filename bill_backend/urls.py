@@ -16,7 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/login/', TokenObtainPairView.as_view(), name='login'),
+    path('api/refreshtoken/', TokenRefreshView.as_view(), name='refreshtoken'),
+    path('api/verifytoken/', TokenVerifyView.as_view, name='verifytoken'),
     path('api/v1/',include('bill_app.urls')),
 ]

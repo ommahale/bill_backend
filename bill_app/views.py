@@ -6,12 +6,13 @@ from rest_framework.views import APIView
 from . import models
 from . import serializers
 from .utils import apiKalwa,getData
+from rest_framework.permissions import IsAuthenticated
 import datetime
 # Create your views here.
-
 class BillListApiView(ListAPIView):
     queryset=models.Bill.objects.all().order_by('-bill_date')
     serializer_class=serializers.BillSerializer
+    # permission_classes=[IsAuthenticated]
     def get_queryset(self):
         id=self.request.query_params.get('id',None)
         if id is not None:
@@ -19,14 +20,17 @@ class BillListApiView(ListAPIView):
         return models.Bill.objects.all().order_by('-bill_date')
 
 class BillUnitListApiView(ListAPIView):
+    # permission_classes=[IsAuthenticated]
     queryset=models.BillUnit.objects.all()
     serializer_class=serializers.BillUnitSerializer
 
 class FaultBillListApiView(ListAPIView):
+    # permission_classes=[IsAuthenticated]
     queryset=models.FaultBill.objects.all()
     serializer_class=serializers.FaultBillSerializer
 
 class BillMeterListApiView(ListAPIView):
+    # permission_classes=[IsAuthenticated]
     queryset=models.BillMeter.objects.all()
     serializer_class=serializers.BillMeterSerializer
 
@@ -59,25 +63,29 @@ class CreateVoucherView(APIView):
                     fault_bill=models.FaultBill.objects.get(bill=bill)
                     voucher.fault_bills.add(fault_bill)
                     bill.status="fault"
-                bill.is_paid=True
+                else:
+                    voucher.bills.add(bill)
+                    bill.status="pending"
                 bill.save()
                 amount+=bill.payable_amount
                 if bill.is_valid_for_incentive:
                     incentive_amount+=bill.incentive_amount
-                voucher.bills.add(bill)
-                bill.status="pending"
             voucher.amount=amount
             voucher.incentive_amount=incentive_amount
+            unit=request.data['unit']
+            voucher.unit=int(unit)
             voucher.save()
             return Response({"status":"vocher created","uid":voucher.uid},status=status.HTTP_201_CREATED)
         except(ValueError):
             return Response({"status":"Invalid format"},status=status.HTTP_400_BAD_REQUEST)
 
 class VoucherListApiView(ListAPIView):
+    # permission_classes=[IsAuthenticated]
     queryset=models.Voucher.objects.all()
     serializer_class=serializers.VoucherSerializer
 
 class CategoryListApiView(ListAPIView):
+    # permission_classes=[IsAuthenticated]
     queryset=models.Category.objects.all()
     serializer_class=serializers.CategoryBillsSerializer
 
