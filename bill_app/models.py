@@ -54,6 +54,9 @@ class Bill(BaseModel):
     penalty_amount=models.FloatField()
     current_reading=models.CharField(max_length=100)
     consumer_name=models.CharField(max_length=100)
+    class Meta:
+        ordering = ['-bill_date']
+        unique_together = ('bill_meter', 'bill_date')
     @property
     def savings(self):
         return self.amount-self.incentive_amount

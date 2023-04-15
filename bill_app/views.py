@@ -108,8 +108,8 @@ class RefreshFault(APIView):
 
 class TestView(APIView):
     def get(self,request):
+        fetchCycle()
         # fetch_DB_data()
-        # fetchCycle()
         return Response({"status":"data"})
 
 def fetchCycle():
@@ -157,7 +157,24 @@ def fetch_DB_data():
             connection_category=bill['connection_category'],
             connection_type=bill['connection_type'][:2],
         )[0]
-        bill_db=models.Bill.objects.get_or_create(
+        try:
+            bill_db=models.Bill.objects.get(
+                bill_date=datetime.datetime.strptime(bill['bill_date'], '%d-%b-%y'),
+                bill_meter=bm,
+                amount=bill['amount'],
+                incentive_amount=bill['incentive_amount'],
+                due_date=datetime.datetime.strptime(bill['due_date'], '%d-%b-%y'),
+                incentive_due_date=datetime.datetime.strptime(bill['incentive_due_date'], '%d-%b-%y'),
+                units_consumed=float(bill['unit_consumed']),
+                bill_desc=bill['bill_desc'],
+                connection=category_data,
+                region='Kalwa',
+                electrical_duty=bill['electrical_duty'],
+                penalty_amount=bill['amount'],
+                consumer_name=bill['consumer_name'],
+            )
+        except(models.Bill.DoesNotExist):
+            models.Bill.objects.create(
             bill_date=datetime.datetime.strptime(bill['bill_date'], '%d-%b-%y'),
             bill_meter=bm,
             amount=bill['amount'],
