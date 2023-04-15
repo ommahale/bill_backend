@@ -3,7 +3,7 @@ from .models import Bill, BillMeter, BillUnit, FaultBill, Threshold, Voucher, Ca
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Threshold
+        model = Category
         fields = (
                 'uid', 
                 'connection_type',
@@ -11,10 +11,12 @@ class CategorySerializer(serializers.ModelSerializer):
 
                 )
 
+
+        
 class BillSerializer(serializers.ModelSerializer):
-    bill_meter=serializers.SlugRelatedField(slug_field='consumer_no',read_only=True)
-    connection_category=serializers.SlugRelatedField(slug_field='connection_category',read_only=True)
-    connection_type=serializers.SlugRelatedField(slug_field='connection_type',read_only=True)
+    bill_meter=serializers.SlugRelatedField(slug_field='consumer_no',read_only=True,)
+    connection_category=serializers.SlugRelatedField(slug_field='connection_category',read_only=True,source='connection')
+    connection_type=serializers.SlugRelatedField(slug_field='connection_type', read_only=True,source='connection')
     billing_unit=serializers.SlugRelatedField(slug_field='billing_unit',read_only=True)
     bill_date=serializers.DateField(format="%d/%m/%Y")
     due_date=serializers.DateField(format="%d/%m/%Y")
@@ -31,8 +33,8 @@ class BillSerializer(serializers.ModelSerializer):
                   'due_date', 
                   'incentive_due_date', 
                   'incentive_amount',
-                  'connection_type',
                   'connection_category',
+                    'connection_type',
                   'units_consumed', 
                   'bill_desc',
                   'region', 
