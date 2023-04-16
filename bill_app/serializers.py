@@ -14,10 +14,10 @@ class CategorySerializer(serializers.ModelSerializer):
 
         
 class BillSerializer(serializers.ModelSerializer):
-    bill_meter=serializers.SlugRelatedField(slug_field='consumer_no',read_only=True,)
+    consumer_no=serializers.SlugRelatedField(slug_field='consumer_no',read_only=True,source='bill_meter')
     connection_category=serializers.SlugRelatedField(slug_field='connection_category',read_only=True,source='connection')
     connection_type=serializers.SlugRelatedField(slug_field='connection_type', read_only=True,source='connection')
-    billing_unit=serializers.SlugRelatedField(slug_field='billing_unit',read_only=True)
+    billing_unit=serializers.SlugRelatedField(slug_field='unit_number',read_only=True,source='bill_meter.billing_unit')
     bill_date=serializers.DateField(format="%d/%m/%Y")
     due_date=serializers.DateField(format="%d/%m/%Y")
     incentive_due_date=serializers.DateField(format="%d/%m/%Y")
@@ -26,7 +26,7 @@ class BillSerializer(serializers.ModelSerializer):
         model = Bill
         fields = (
                   'uid', 
-                  'bill_meter',
+                  'consumer_no',
                   'billing_unit',
                   'bill_date', 
                   'amount', 
@@ -34,7 +34,7 @@ class BillSerializer(serializers.ModelSerializer):
                   'incentive_due_date', 
                   'incentive_amount',
                   'connection_category',
-                    'connection_type',
+                  'connection_type',
                   'units_consumed', 
                   'bill_desc',
                   'region', 
@@ -51,6 +51,11 @@ class BillSerializer(serializers.ModelSerializer):
                   )
         
 class BillExcludeMeterSerializer(serializers.ModelSerializer):
+    bill_date=serializers.DateField(format="%d/%m/%Y")
+    due_date=serializers.DateField(format="%d/%m/%Y")
+    incentive_due_date=serializers.DateField(format="%d/%m/%Y")
+    connection_category=serializers.SlugRelatedField(slug_field='connection_category',read_only=True,source='connection')
+    connection_type=serializers.SlugRelatedField(slug_field='connection_type', read_only=True,source='connection')
     class Meta:
         depth=2
         model = Bill
@@ -61,7 +66,8 @@ class BillExcludeMeterSerializer(serializers.ModelSerializer):
                   'due_date', 
                   'incentive_due_date', 
                   'incentive_amount', 
-                  'connection', 
+                  'connection_category',
+                  'connection_type', 
                   'units_consumed', 
                   'bill_desc',
                   'region', 
