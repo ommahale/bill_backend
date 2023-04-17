@@ -114,7 +114,11 @@ class Voucher(BaseModelBigAuto):
     last_bill_date = models.DateField()
     @property
     def savings(self):
-        return self.amount-self.incentive_amount
+        savings=0
+        for bill in self.bills.all():
+            if bill.is_valid_for_incentive:
+                savings+=bill.savings
+        return savings
     @property
     def total_amount(self):
         bills=self.bills.all()

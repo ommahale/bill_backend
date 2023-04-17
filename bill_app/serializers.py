@@ -175,7 +175,9 @@ class VoucherSerializer(serializers.ModelSerializer):
                 'voucher_date', 
                 'last_bill_date',
                 'savings',
-                'total_amount'
+                'total_amount',
+                'fault_bills',
+                'cleared_bills',
                 )
 
 class CategoryBillsSerializer(serializers.ModelSerializer):

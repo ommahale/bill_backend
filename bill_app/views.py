@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from .utils import apiKalwa,getData
 from rest_framework.permissions import IsAuthenticated
 import datetime
 from drf_yasg.utils import swagger_auto_schema
+from django.template.loader import get_template
 # Create your views here.
 class BillListApiView(ListAPIView):
     queryset=models.Bill.objects.all().order_by('-bill_date')
@@ -63,12 +65,14 @@ class CreateVoucherView(APIView):
             data=request.data['bills']
             voucher=models.Voucher.objects.create()
             for bill in data:
+                print(bill['uid'])
                 bill=models.Bill.objects.get(uid=bill['uid'])
                 if bill is None:
                     return Response({"status":"bill {uid} not found".format(uid=bill['uid'])},status=status.HTTP_404_NOT_FOUND)
                 if bill.has_fault:
                     fault_bill=models.FaultBill.objects.get(bill=bill)
                     voucher.fault_bills.add(fault_bill)
+                    print(serializers.FaultBillSerializer(fault_bill).data)
                     bill.status="fault"
                 else:
                     voucher.bills.add(bill)
@@ -190,3 +194,24 @@ def fetch_DB_data():
             current_reading='NaN',
             consumer_name=bill['consumer_name'],
         )
+
+class pdfAPI(APIView):
+    def get(self,request,uid):
+        template=get_template('template.html')
+        data=models.Voucher.objects.get(uid=uid)
+        serialzer=serializers.VoucherSerializer(data)
+        context=serialzer.data
+        print(context)
+        context["amt_1"]=100000
+        context["amt_2"]=90000
+        context["amt_3"]=50000
+        context["amt_4"]=context["amt_3"]+context["amount"]
+        context["amt_5"]=context["amt_2"]-(context["amount"]+context["amt_3"])
+        for i in range(len(context['bills'])):
+            context['bills'][i]['sr_no']=i+1
+        context['voucher_datef']=datetime.datetime.strptime(str(context['voucher_date']),'%Y-%m-%d').strftime('%d/%m/%Y')
+        html=template.render(context)
+        # pdf=render_to_pdf('template.html',context)
+        # return HttpResponse(pdf,content_type='application/pdf')
+        return HttpResponse(html)
+        return Response(context)
