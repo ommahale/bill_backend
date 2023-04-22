@@ -147,6 +147,7 @@ def fetchCycle():
             send_alert=True
     
     print("fetch cycle completed")
+    apiKalwa.bills=[]
 
 def fetch_DB_data():
     bills=getData()
