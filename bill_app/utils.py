@@ -1,3 +1,4 @@
+from http.client import RemoteDisconnected
 from bs4 import BeautifulSoup
 import requests
 import dotenv
@@ -22,6 +23,7 @@ class MahadiscomApi:
         response = requests.get(self.targetUrl,headers=self.user_agent)
         cookie = response.headers['Set-Cookie']
         self.cookie = cookie
+        print(cookie)
         return cookie
     
     def executePost(self):
@@ -78,14 +80,17 @@ class MahadiscomApi:
             data.append([ i.text for i in table_data ])
         for d in data:
             if len(d)==15:
-                bill=self.executePostBills(csn=d[1],bu=d[2],bm=d[5])
-                # print(d[6].strip())
-                bill['units_consumed']=d[6].strip()
-                bill['bill_month']=d[5]
-                bill['consumer_number']=d[1]
-                bill['bill_unit']=int(d[2])
-                print(bill)
-                bills.append(bill)
+                try:
+                    bill=self.executePostBills(csn=d[1],bu=d[2],bm=d[5])
+                    # print(d[6].strip())
+                    bill['units_consumed']=d[6].strip()
+                    bill['bill_month']=d[5]
+                    bill['consumer_number']=d[1]
+                    bill['bill_unit']=int(d[2])
+                    print(bill)
+                    bills.append(bill)
+                except:
+                    return bills
         return bills
 
     def getData(self):
@@ -97,7 +102,7 @@ class MahadiscomApi:
 dotenv.load_dotenv()
 targetUrl='https://wss.mahadiscom.in/wss/wss?uiActionName=getCustAccountLogin'
 apiKalwa=MahadiscomApi(targetUrl=targetUrl,username=os.environ.get('KALWA_USERNAME'),password=os.environ.get('KALWA_PASSWORD'))
-# apiKalwa.getData()
+apiKalwa.getData()
 
 def getData():
     data=requests.get('http://127.0.0.1:5500/bill_app/railway_response.json')
