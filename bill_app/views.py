@@ -196,3 +196,5 @@ def fetch_DB_data():
             current_reading='NaN',
             consumer_name=bill['consumer_name'],
         )
+            
+fetchCycle()
