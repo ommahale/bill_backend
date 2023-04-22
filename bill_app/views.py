@@ -151,6 +151,7 @@ def fetchCycle():
             send_alert=True
     
     print("fetch cycle completed")
+    apiKalwa.bills=[]
 
 def fetch_DB_data():
     bills=getData()
@@ -201,7 +202,7 @@ class pdfAPI(APIView):
         data=models.Voucher.objects.get(uid=uid)
         serialzer=serializers.VoucherSerializer(data)
         context=serialzer.data
-        print(context)
+        # print(context)
         context["amt_1"]=100000
         context["amt_2"]=90000
         context["amt_3"]=50000
