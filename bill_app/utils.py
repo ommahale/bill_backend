@@ -10,27 +10,35 @@ class MahadiscomApi:
     user_agent = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'}
 
     
-    def __init__(self,targetUrl,username,password) -> None:
+    def __init__(self,targetUrl,username,password,max_retrys) -> None:
         self.targetUrl = targetUrl
         self.username = username
         self.password = password
+        self.max_retrys = max_retrys
+        self.try_count=0
         self.cookie=None
         self.html_text=None
         self.bill_html=None
         self.bills=[]
 
     def executeGet(self):
-        response = requests.get(self.targetUrl,headers=self.user_agent)
-        cookie = response.headers['Set-Cookie']
-        self.cookie = cookie
-        print(cookie)
-        return cookie
+        try:
+            response = requests.get(self.targetUrl,headers=self.user_agent)
+            cookie = response.headers['Set-Cookie']
+            self.cookie = cookie
+            print(cookie)
+            return cookie
+        except:
+            self.executeGet()
     
     def executePost(self):
         payload = {'loginId':self.username,'password':self.password,'uiActionName':'postCustAccountLogin'}
         params = {'Set-Cookie':self.cookie}
-        response = requests.post(self.targetUrl,data=payload,headers=params)
-        self.html_text = response.text
+        try:
+            response = requests.post(self.targetUrl,data=payload,headers=params)
+            self.html_text = response.text
+        except:
+            self.executePost()
 
     def executePostBills(self,bu,bm,csn):
         payload= {'loginId':self.username,'password':self.password,'uiActionName':'getLTEnergyBillPage','hdnBillMonth': bm,'isViaForm': 'Y',
@@ -74,13 +82,14 @@ class MahadiscomApi:
         data = []
         # all data is stored here
         bills=[]
+        try_bills=[]
         for r in rows:
             # find table columns
             table_data = r.find_all('td')
             data.append([ i.text for i in table_data ])
-        for d in data:
-            if len(d)==15:
-                try:
+        try:    
+            for d in data:
+                if len(d)==15:
                     bill=self.executePostBills(csn=d[1],bu=d[2],bm=d[5])
                     # print(d[6].strip())
                     bill['units_consumed']=d[6].strip()
@@ -88,21 +97,31 @@ class MahadiscomApi:
                     bill['consumer_number']=d[1]
                     bill['bill_unit']=int(d[2])
                     print(bill)
-                    bills.append(bill)
-                except:
-                    return bills
+                    try_bills.append(bill)
+                    if len(try_bills)>len(self.bills):
+                        self.bills=try_bills
+                        print('Bills Updated____________________')
+        except:
+            if self.try_count<self.max_retrys:
+                self.try_count+=1
+                self.consumer_parser()
+            else:
+                print('Max Retrys Exceeded')
+                return self.bills
+
         return bills
 
     def getData(self):
         self.executeGet()
         self.executePost()
-        self.bills= self.consumer_parser()
+        self.consumer_parser()
 
 
 dotenv.load_dotenv()
 targetUrl='https://wss.mahadiscom.in/wss/wss?uiActionName=getCustAccountLogin'
-apiKalwa=MahadiscomApi(targetUrl=targetUrl,username=os.environ.get('KALWA_USERNAME'),password=os.environ.get('KALWA_PASSWORD'))
+apiKalwa=MahadiscomApi(targetUrl=targetUrl,username=os.environ.get('KALWA_USERNAME'),password=os.environ.get('KALWA_PASSWORD'),max_retrys=10)
 # apiKalwa.getData()
+# print(apiKalwa.bills)
 
 def getData():
     data=requests.get('http://127.0.0.1:5500/bill_app/railway_response.json')

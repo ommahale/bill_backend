@@ -120,6 +120,7 @@ def fetchCycle():
         return Response({'error':'connection error'})
     bills=apiKalwa.bills
     send_alert=False
+    fault_bills_count=0
     for bill in bills:
         bu=models.BillUnit.objects.get_or_create(unit_number=bill['bill_unit'])[0]
         bm=models.BillMeter.objects.get_or_create(consumer_no=bill['consumer_number'],billing_unit=bu)[0]
@@ -145,8 +146,12 @@ def fetchCycle():
         )
         if bill_db[0].has_fault:
             send_alert=True
+            fault_bills_count+=1
     
     print("fetch cycle completed")
+    if send_alert:
+        print('fault bills found:')
+        print(fault_bills_count)
     apiKalwa.bills=[]
 
 def fetch_DB_data():
