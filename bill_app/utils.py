@@ -102,7 +102,7 @@ class MahadiscomApi:
 dotenv.load_dotenv()
 targetUrl='https://wss.mahadiscom.in/wss/wss?uiActionName=getCustAccountLogin'
 apiKalwa=MahadiscomApi(targetUrl=targetUrl,username=os.environ.get('KALWA_USERNAME'),password=os.environ.get('KALWA_PASSWORD'))
-apiKalwa.getData()
+# apiKalwa.getData()
 
 def getData():
     data=requests.get('http://127.0.0.1:5500/bill_app/railway_response.json')
