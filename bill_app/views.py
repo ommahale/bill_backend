@@ -157,7 +157,6 @@ def fetchCycle():
     if send_alert:
         print('fault bills found:')
         print(fault_bills_count)
-    apiKalwa.bills=[]
 
 def fetch_DB_data():
     bills=getData()
@@ -221,7 +220,6 @@ class pdfAPI(APIView):
         # pdf=render_to_pdf('template.html',context)
         # return HttpResponse(pdf,content_type='application/pdf')
         return HttpResponse(html)
-        return Response(context)
 
             
 fetchCycle()

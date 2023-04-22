@@ -81,7 +81,6 @@ class MahadiscomApi:
         rows = table.find_all('tr')
         data = []
         # all data is stored here
-        bills=[]
         try_bills=[]
         for r in rows:
             # find table columns
@@ -101,12 +100,15 @@ class MahadiscomApi:
                     if len(try_bills)>len(self.bills):
                         self.bills=try_bills
                         print('Bills Updated____________________')
+                        print(self.bills)
         except:
             if self.try_count<self.max_retrys:
                 self.try_count+=1
+                print('Retrying')
                 self.consumer_parser()
             else:
                 print('Max Retrys Exceeded')
+                print(self.bills)
                 return self.bills
 
         return self.bills
