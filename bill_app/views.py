@@ -144,7 +144,7 @@ def fetchCycle():
             current_reading=bill['current_reading'],
             consumer_name=bill['consumer_name'],
         )
-        if bill_db[0].has_fault:
+        if bill_db[0].has_fault and bill_db[1]:
             send_alert=True
             fault_bills_count+=1
     

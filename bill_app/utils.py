@@ -109,7 +109,7 @@ class MahadiscomApi:
                 print('Max Retrys Exceeded')
                 return self.bills
 
-        return bills
+        return self.bills
 
     def getData(self):
         self.executeGet()
