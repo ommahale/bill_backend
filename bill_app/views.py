@@ -124,6 +124,7 @@ def fetchCycle():
         return Response({'error':'connection error'})
     bills=apiKalwa.bills
     send_alert=False
+    fault_bills_count=0
     for bill in bills:
         bu=models.BillUnit.objects.get_or_create(unit_number=bill['bill_unit'])[0]
         bm=models.BillMeter.objects.get_or_create(consumer_no=bill['consumer_number'],billing_unit=bu)[0]
@@ -147,10 +148,15 @@ def fetchCycle():
             current_reading=bill['current_reading'],
             consumer_name=bill['consumer_name'],
         )
-        if bill_db[0].has_fault:
+        if bill_db[0].has_fault and bill_db[1]:
             send_alert=True
+            fault_bills_count+=1
     
     print("fetch cycle completed")
+    apiKalwa.bills=[]
+    if send_alert:
+        print('fault bills found:')
+        print(fault_bills_count)
     apiKalwa.bills=[]
 
 def fetch_DB_data():
@@ -216,3 +222,6 @@ class pdfAPI(APIView):
         # return HttpResponse(pdf,content_type='application/pdf')
         return HttpResponse(html)
         return Response(context)
+
+            
+fetchCycle()
