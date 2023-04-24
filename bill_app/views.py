@@ -29,7 +29,7 @@ class BillUnitListApiView(ListAPIView):
 
 class FaultBillListApiView(ListAPIView):
     # permission_classes=[IsAuthenticated]
-    queryset=models.FaultBill.objects.all()
+    queryset=models.FaultBill.objects.all().order_by('-bill__bill_date')
     serializer_class=serializers.FaultBillSerializer
 
 class BillMeterListApiView(ListAPIView):
