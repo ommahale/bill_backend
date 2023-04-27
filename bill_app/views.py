@@ -227,6 +227,8 @@ class pdfAPI(APIView):
         # return HttpResponse(pdf,content_type='application/pdf')
         return HttpResponse(html)
 
-            
+class ThresholdListView(ListAPIView):
+    queryset=models.Threshold.objects.all()
+    serializer_class=serializers.ThresholdSerializer
 # fetchCycle()
 # apiKalwa.getData()
