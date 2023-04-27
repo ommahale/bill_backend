@@ -95,6 +95,12 @@ class VoucherListApiView(ListAPIView):
     queryset=models.Voucher.objects.all()
     serializer_class=serializers.VoucherSerializer
 
+class VoucherDetailApiView(APIView):
+    def get(self,request,uid):
+        voucher=models.Voucher.objects.get(uid=uid)
+        data=serializers.VoucherSerializer(voucher).data
+        return Response(data)
+
 class CategoryListApiView(ListAPIView):
     # permission_classes=[IsAuthenticated]
     queryset=models.Category.objects.all()
@@ -222,4 +228,5 @@ class pdfAPI(APIView):
         return HttpResponse(html)
 
             
-fetchCycle()
+# fetchCycle()
+# apiKalwa.getData()

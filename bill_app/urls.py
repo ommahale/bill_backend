@@ -4,6 +4,11 @@ from . import views
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+      TokenVerifyView
+)
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -27,9 +32,12 @@ urlpatterns = [
     path('analytics/<str:bill_meter_id>/',views.AmountAnalyticsApiView.as_view()),
     path('createvoucher/',views.CreateVoucherView.as_view()),
     path('vouchers/',views.VoucherListApiView.as_view()),
+    path('vouchers/<str:uid>/',views.VoucherDetailApiView.as_view()),
     path('category/',views.CategoryListApiView.as_view()),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('test/<str:uid>',views.pdfAPI.as_view()),
-
+    path('login/', TokenObtainPairView.as_view(), name='login'),
+    path('refreshtoken/', TokenRefreshView.as_view(), name='refreshtoken'),
+    path('verifytoken/', TokenVerifyView.as_view, name='verifytoken'),
 ]
