@@ -46,14 +46,14 @@ class AmountAnalyticsApiView(APIView):
         data['meter']=meter
         data['percentage_change_amount']=(bills_data[0].amount-bills_data.last().amount)*100/bills_data.last().amount
         if len(bills_data)>1:
-            data['monthly change_amount']=(bills_data[0].amount-bills_data[1].amount)*100/bills_data[1].amount
+            data['monthly_change_amount']=(bills_data[0].amount-bills_data[1].amount)*100/bills_data[1].amount
         if len(bills_data)>=12:
-            data['yearly change_amount']=(bills_data[0].amount-bills_data[11].amount)*100/bills_data[11].amount
+            data['yearly_change_amount']=(bills_data[0].amount-bills_data[11].amount)*100/bills_data[11].amount
         data['percentage_change_unit']=(bills_data[0].units_consumed-bills_data.last().units_consumed)*100/bills_data.last().units_consumed
         if len(bills_data)>1:
-            data['monthly change_unit']=(bills_data[0].units_consumed-bills_data[1].units_consumed)*100/bills_data[1].units_consumed
+            data['monthly_change_unit']=(bills_data[0].units_consumed-bills_data[1].units_consumed)*100/bills_data[1].units_consumed
         if len(bills_data)>=12:
-            data['yearly change_unit']=(bills_data[0].units_consumed-bills_data[11].units_consumed)*100/bills_data[11].units_consumed
+            data['yearly_change_unit']=(bills_data[0].units_consumed-bills_data[11].units_consumed)*100/bills_data[11].units_consumed
         return Response(data)
 
 class CreateVoucherView(APIView):
@@ -223,8 +223,6 @@ class pdfAPI(APIView):
             context['bills'][i]['sr_no']=i+1
         context['voucher_datef']=datetime.datetime.strptime(str(context['voucher_date']),'%Y-%m-%d').strftime('%d/%m/%Y')
         html=template.render(context)
-        # pdf=render_to_pdf('template.html',context)
-        # return HttpResponse(pdf,content_type='application/pdf')
         return HttpResponse(html)
 
 class ThresholdListView(ListAPIView):

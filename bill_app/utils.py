@@ -21,42 +21,44 @@ class MahadiscomApi:
         self.html_text=None
         self.bill_html=None
         self.bills=[]
-        self.proxy_arr=requests.get('https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=lastChecked&sort_type=desc',headers=self.user_agent).json()['data']
-        index=randint(0,500)
-        self.proxy=self.proxy_arr[index]['protocols'][0]+'://'+self.proxy_arr[index]['ip']+':'+self.proxy_arr[index]['port']
-        print(self.proxy)
 
-    def getNewProxy(self):
-        index=randint(0,500)
-        self.proxy=self.proxy_arr[index]['protocols'][0]+'://'+self.proxy_arr[index]['ip']+':'+self.proxy_arr[index]['port']
+        # ======================= PROXY API CALL =======================
+        #Need to improve this
+
+        # self.proxy_arr=requests.get('https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=lastChecked&sort_type=desc',headers=self.user_agent).json()['data']
+        # index=randint(0,500)
+        # self.proxy=self.proxy_arr[index]['protocols'][0]+'://'+self.proxy_arr[index]['ip']+':'+self.proxy_arr[index]['port']
+        # print(self.proxy)
+
+    # def getNewProxy(self):
+    #     index=randint(0,500)
+    #     self.proxy=self.proxy_arr[index]['protocols'][0]+'://'+self.proxy_arr[index]['ip']+':'+self.proxy_arr[index]['port']
 
     def executeGet(self):
         try:
-            response = requests.get(self.targetUrl,headers=self.user_agent,proxies={'http':self.proxy,'https':self.proxy})
+            response = requests.get(self.targetUrl,headers=self.user_agent)
             cookie = response.headers['Set-Cookie']
             self.cookie = cookie
             print(cookie)
             return cookie
         except(RemoteDisconnected):
             print("Proxy Error")
-            self.getNewProxy()
             self.executeGet()
     
     def executePost(self):
         payload = {'loginId':self.username,'password':self.password,'uiActionName':'postCustAccountLogin'}
         params = {'Set-Cookie':self.cookie}
         try:
-            response = requests.post(self.targetUrl,data=payload,headers=params,proxies={'http':self.proxy,'https':self.proxy})
+            response = requests.post(self.targetUrl,data=payload,headers=params)
             self.html_text = response.text
         except:
-            self.getNewProxy()
             self.executePost()
 
     def executePostBills(self,bu,bm,csn):
         payload= {'loginId':self.username,'password':self.password,'uiActionName':'getLTEnergyBillPage','hdnBillMonth': bm,'isViaForm': 'Y',
                'isLT':'Y','hdnBu':bu,'hdnConsumerNumber':csn}
         params = {'Set-Cookie':self.cookie}
-        response = requests.post(self.targetUrl,data=payload,headers=params,proxies={'http':self.proxy,'https':self.proxy})
+        response = requests.post(self.targetUrl,data=payload,headers=params)
         self.bill_html = response.text
         soup_bill = BeautifulSoup(self.bill_html,'html.parser')
         info={}
@@ -115,7 +117,6 @@ class MahadiscomApi:
                         print(self.bills)
         except:
             if self.try_count<self.max_retrys:
-                self.getNewProxy()
                 self.try_count+=1
                 print('Retrying')
                 self.consumer_parser()
