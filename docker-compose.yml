@@ -1,0 +1,20 @@
+version: '3.1'
+services:
+  db:
+    hostname: db
+    restart: always
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data:/data/db
+  app:
+    build: .
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+    environment:
+      - PORT=8000
+    depends_on:
+      - db

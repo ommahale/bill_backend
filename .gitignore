@@ -3,3 +3,4 @@ bill_app/__pycache__
 bill_app/migrations/__pycache__
 venv/
 bill_app/fetch_scheduler/__pycache__
+data

@@ -1,5 +1,5 @@
 FROM python:3.10.0-slim-buster
-WORKDIR /usr/app
+WORKDIR /app
 COPY . .
 
 RUN pip3 --version
