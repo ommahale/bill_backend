@@ -5,6 +5,7 @@ COPY . .
 RUN pip3 --version
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
+
 ENV PYTHONUNBUFFERED 1
 
 EXPOSE 8000
