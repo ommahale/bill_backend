@@ -136,7 +136,7 @@ class MahadiscomApi:
 
 dotenv.load_dotenv()
 targetUrl='https://wss.mahadiscom.in/wss/wss?uiActionName=getCustAccountLogin'
-apiKalwa=MahadiscomApi(targetUrl=targetUrl,username=os.environ.get('KALWA_USERNAME'),password=os.environ.get('KALWA_PASSWORD'),max_retrys=10)
+apiKalwa=MahadiscomApi(targetUrl=targetUrl,username=os.getenv('KALWA_USERNAME'),password=os.getenv('KALWA_PASSWORD'),max_retrys=10)
 # apiKalwa.getData()
 # print(apiKalwa.bills)
 

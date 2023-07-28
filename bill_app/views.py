@@ -13,14 +13,14 @@ from drf_yasg.utils import swagger_auto_schema
 from django.template.loader import get_template
 # Create your views here.
 class BillListApiView(ListAPIView):
-    queryset=models.Bill.objects.all().order_by('-bill_date')
+    queryset=models.Bill.objects.prefetch_related("bill_meter__billing_unit").all().order_by('-bill_date')
     serializer_class=serializers.BillSerializer
     # permission_classes=[IsAuthenticated]
     def get_queryset(self):
         id=self.request.query_params.get('id',None)
         if id is not None:
-            return models.Bill.objects.filter(uid=id).order_by('-bill_date')
-        return models.Bill.objects.all().order_by('-bill_date')
+            return models.Bill.objects.filter(uid=id).prefetch_related("bill_meter__billing_unit").order_by('-bill_date')
+        return models.Bill.objects.prefetch_related("bill_meter__billing_unit").all().order_by('-bill_date')
 
 class BillUnitListApiView(ListAPIView):
     # permission_classes=[IsAuthenticated]
@@ -29,7 +29,7 @@ class BillUnitListApiView(ListAPIView):
 
 class FaultBillListApiView(ListAPIView):
     # permission_classes=[IsAuthenticated]
-    queryset=models.FaultBill.objects.all().order_by('-bill__bill_date')
+    queryset=models.FaultBill.objects.all().prefetch_related("bill__bill_meter__billing_unit").order_by('-bill__bill_date')
     serializer_class=serializers.FaultBillSerializer
 
 class BillMeterListApiView(ListAPIView):
