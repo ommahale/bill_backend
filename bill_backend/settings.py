@@ -93,26 +93,26 @@ USE_L10N = False
 
 
 #_____LOCAL TESTING_____
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': os.getenv('MDB_NAME_DEV'),
-        'CLIENT': {
-            'host': os.getenv('MDB_HOST_DEV')
-        }
-    }
-}
-
-# #_____PRODUCTION_____
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'djongo',
 #         'NAME': os.getenv('MDB_NAME_DEV'),
 #         'CLIENT': {
-#             'host': os.getenv('MDB_HOST_PROD')
+#             'host': os.getenv('MDB_HOST_DEV')
 #         }
 #     }
 # }
+
+# #_____PRODUCTION_____
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': os.getenv('MDB_NAME_DEV'),
+        'CLIENT': {
+            'host': os.getenv('MDB_HOST_PROD')
+        }
+    }
+}
 
 
 
@@ -173,7 +173,9 @@ REST_FRAMEWORK = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20
 }
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
