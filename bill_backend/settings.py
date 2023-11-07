@@ -18,14 +18,13 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*",'http://localhost:3000', 'https://electricity-frontend-reac-git-5250f4-kundana-c20009-isquareited.vercel.app','http://0.0.0.0:8000',]
+ALLOWED_HOSTS = ['http://localhost:3000', 'https://electricity-frontend-reac-git-5250f4-kundana-c20009-isquareited.vercel.app','http://0.0.0.0:8000',]
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'http://localhost:8000',
     'https://electricity-frontend-reac-git-5250f4-kundana-c20009-isquareited.vercel.app',
     'http://0.0.0.0:8000',
-
 ]
 
 
@@ -93,26 +92,26 @@ USE_L10N = False
 
 
 #_____LOCAL TESTING_____
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': os.getenv('MDB_NAME_DEV'),
-#         'CLIENT': {
-#             'host': os.getenv('MDB_HOST_DEV')
-#         }
-#     }
-# }
-
-# #_____PRODUCTION_____
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': os.getenv('MDB_NAME_DEV'),
         'CLIENT': {
-            'host': os.getenv('MDB_HOST_PROD')
+            'host': os.getenv('MDB_HOST_DEV')
         }
     }
 }
+
+# #_____PRODUCTION_____
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': os.getenv('MDB_NAME_DEV'),
+#         'CLIENT': {
+#             'host': os.getenv('MDB_HOST_PROD')
+#         }
+#     }
+# }
 
 
 

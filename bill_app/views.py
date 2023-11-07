@@ -12,6 +12,14 @@ import datetime
 from drf_yasg.utils import swagger_auto_schema
 from django.template.loader import get_template
 # Create your views here.
+
+
+
+
+'''
+API to fetch bill list
+
+'''
 class BillListApiView(ListAPIView):
     queryset=models.Bill.objects.prefetch_related("bill_meter__billing_unit").all().order_by('-bill_date')
     serializer_class=serializers.BillSerializer
@@ -22,21 +30,42 @@ class BillListApiView(ListAPIView):
             return models.Bill.objects.filter(uid=id).prefetch_related("bill_meter__billing_unit").order_by('-bill_date')
         return models.Bill.objects.prefetch_related("bill_meter__billing_unit").all().order_by('-bill_date')
 
+
+
+'''
+API to fetch bill unit list
+
+'''
 class BillUnitListApiView(ListAPIView):
     # permission_classes=[IsAuthenticated]
     queryset=models.BillUnit.objects.all()
     serializer_class=serializers.BillUnitSerializer
 
+
+'''
+API to fetch faulty bill list
+
+'''
 class FaultBillListApiView(ListAPIView):
     # permission_classes=[IsAuthenticated]
     queryset=models.FaultBill.objects.all().prefetch_related("bill__bill_meter__billing_unit").order_by('-bill__bill_date')
     serializer_class=serializers.FaultBillSerializer
 
+
+'''
+API to fetch bill meter list
+
+'''
 class BillMeterListApiView(ListAPIView):
     # permission_classes=[IsAuthenticated]
     queryset=models.BillMeter.objects.all()
     serializer_class=serializers.BillMeterSerializer
 
+
+'''
+API to fetch bill analytics
+
+'''
 class AmountAnalyticsApiView(APIView):
     def get(self, request,bill_meter_id):
         meter_data=models.BillMeter.objects.get(uid=bill_meter_id)
@@ -56,6 +85,12 @@ class AmountAnalyticsApiView(APIView):
             data['yearly_change_unit']=(bills_data[0].units_consumed-bills_data[11].units_consumed)*100/bills_data[11].units_consumed
         return Response(data)
 
+
+
+'''
+API to create voucher
+
+'''
 class CreateVoucherView(APIView):
     @swagger_auto_schema(request_body=serializers.CreateVoucherSerializer)
     def post(self,request):
@@ -90,6 +125,11 @@ class CreateVoucherView(APIView):
         except(ValueError):
             return Response({"status":"Invalid format"},status=status.HTTP_400_BAD_REQUEST)
 
+
+'''
+API to fetch voucher list
+
+'''
 class VoucherListApiView(ListAPIView):
     # permission_classes=[IsAuthenticated]
     queryset=models.Voucher.objects.all()
@@ -164,6 +204,13 @@ def fetchCycle():
         print('fault bills found:')
         print(fault_bills_count)
 
+
+
+'''
+
+#_______________Needs improvement_______________
+  
+
 def fetch_DB_data():
     bills=getData()
     for bill in bills:
@@ -207,6 +254,8 @@ def fetch_DB_data():
             consumer_name=bill['consumer_name'],
         )
 
+
+'''
 class pdfAPI(APIView):
     def get(self,request,uid):
         template=get_template('template.html')
